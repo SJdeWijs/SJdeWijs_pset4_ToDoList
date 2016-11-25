@@ -20,28 +20,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
-
-/**
- * Created by Sander de Wijs on 21-11-2016.
- */
+/*
+*
+* Created by Sander de Wijs on 21-11-2016.
+*/
 
 public class DBhelper extends SQLiteOpenHelper {
-
-    // create database, buttons, EditTexts and listview
-    //SQLiteDatabase tasksDB = null;
-    //ListView tasksListView;
-    //Button addTaskButton; deleteTaskButton;
-    //EditText taskEditText;
-
-    // onCreate
-    @Override
-    public void onCreate(SQLiteDatabase tasksDB) {
-
-        // create table
-        String CREATE_TABLE = "CREATE TABLE " + TABLE + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                task_id + " TEXT)";
-        tasksDB.execSQL(CREATE_TABLE);
-    }
 
     // set fields of database schema
     private static final String DATABASE_NAME = "tasksDB.db";
@@ -52,19 +36,26 @@ public class DBhelper extends SQLiteOpenHelper {
 
     // constructor
     public DBhelper (Context context) {
-
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // onUpgrade
     @Override
-    public void onUpgrade(SQLiteDatabase tasksDB, int i, int i1) {
-        // delete current table, then create table and fill in with new data
-        tasksDB.execSQL("DROP TABLE IF EXISTS " + TABLE);
-        onCreate(tasksDB);
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+        // create table
+        String CREATE_TABLE = "CREATE TABLE " + TABLE + " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                task_id + " TEXT)";
+        sqLiteDatabase.execSQL(CREATE_TABLE);
     }
 
-    // create task (insert in database) (Crud)
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        // delete current table, then create table and fill in with new data
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE);
+        onCreate(sqLiteDatabase);
+    }
+
+    // create task and insert in database (Crud)
     public void create (String task){
         SQLiteDatabase tasksDB = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -73,29 +64,38 @@ public class DBhelper extends SQLiteOpenHelper {
         tasksDB.close();
     }
 
-    // read task (cRud)
-    public ArrayList<HashMap<String, String>> read() {
-        SQLiteDatabase tasksDB = getReadableDatabase();
+/*    // read task (cRud)
+    public ArrayList<String> fetch() {
         String query = "SELECT _id , " + task_id + "FROM " + TABLE ;
-        ArrayList<HashMap<String, String>> phonebook = new ArrayList<>();
+        ArrayList<String> taskList = new ArrayList<>();
+        SQLiteDatabase tasksDB = getReadableDatabase();
         Cursor cursor = tasksDB.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
+                String taskData;
+                taskData.setId(cursor.getString(cursor.getColumnIndex("_id")));
+
+
                 HashMap<String, String> taskdata = new HashMap<>();
                 taskdata.put("id", cursor.getString(cursor.getColumnIndex("_id")));
                 taskdata.put("task", cursor.getString(cursor.getColumnIndex(task_id)));
-                phonebook.add(taskdata);
+                taskList.add(taskData);
             } while (cursor.moveToNext());
         }
         cursor.close();
         tasksDB.close();
-        return phonebook;
+        return taskList;
 
-    }
+    }*/
 
-    public Cursor fetch() {
-        String[] columns = new String[] { DBhelper._ID, DBhelper.SUBJECT, DBhelper.DESC };
-        Cursor cursor = tasks.query(DBhelper.TABLE_NAME, columns, null, null, null, null, null);
+
+    public Cursor read() {
+        SQLiteDatabase tasksDB = getReadableDatabase();
+        String[] columns = new String[] { "_id", "task_id" };
+        String query = "SELECT _id , " + task_id + "FROM " + TABLE ;
+        // Query for items from the database and get a cursor back
+        //Cursor todoCursor = db.rawQuery("SELECT  * FROM todo_items", null);
+        Cursor cursor = tasksDB.rawQuery(query, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -113,12 +113,9 @@ public class DBhelper extends SQLiteOpenHelper {
 
     // delete task (cruD)
     public void delete(int id) {
-
         SQLiteDatabase tasksDB = getWritableDatabase();
         tasksDB.delete(TABLE, " _id = ? ", new String[]{String.valueOf(id)});
         tasksDB.close();
     }
 
 }
-
-

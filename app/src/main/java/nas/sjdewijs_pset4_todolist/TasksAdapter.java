@@ -16,13 +16,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-/**
+/*
+*
  * Created by Sander de Wijs on 22-11-2016.
  * Retrieves the items out of DBhelper and then converts the task and inserts
  * it in to a ListView.
  * This adapter has been copied from https://github.com/codepath/android_guides/wiki/Populating-a-ListView-with-a-CursorAdapter
- */
+*/
 
 public class TasksAdapter extends CursorAdapter {
     public TasksAdapter(Context context, Cursor cursor) {
