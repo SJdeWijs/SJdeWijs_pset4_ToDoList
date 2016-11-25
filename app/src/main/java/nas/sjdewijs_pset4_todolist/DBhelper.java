@@ -2,24 +2,10 @@ package nas.sjdewijs_pset4_todolist;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.content.Context.MODE_PRIVATE;
 /*
 *
 * Created by Sander de Wijs on 21-11-2016.
@@ -56,10 +42,10 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
     // create task and insert in database (Crud)
-    public void create (String task){
+    public void create (String task_element){
         SQLiteDatabase tasksDB = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(task_id, task);
+        values.put(task_id, task_element);
         tasksDB.insert(TABLE, null, values);
         tasksDB.close();
     }
@@ -88,14 +74,13 @@ public class DBhelper extends SQLiteOpenHelper {
 
     }*/
 
-
+    // read task (cRud)
     public Cursor read() {
         SQLiteDatabase tasksDB = getReadableDatabase();
         String[] columns = new String[] { "_id", "task_id" };
-        String query = "SELECT _id , " + task_id + "FROM " + TABLE ;
+        Cursor cursor = tasksDB.rawQuery("SELECT  * FROM tasks", null);
+        //String query = "SELECT _id , " + task_id + "FROM " + TABLE ;
         // Query for items from the database and get a cursor back
-        //Cursor todoCursor = db.rawQuery("SELECT  * FROM todo_items", null);
-        Cursor cursor = tasksDB.rawQuery(query, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -103,10 +88,10 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
     // update task (crUd)
-    public void update(String task) {
+    public void update(String task_element) {
         SQLiteDatabase tasksDB = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(task_id, task);
+        values.put(task_id, task_element);
         tasksDB.update(TABLE, values, "_id = ? ", new String[]{String.valueOf(task_id)});
         tasksDB.close();
     }
